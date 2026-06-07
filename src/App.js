@@ -3,29 +3,68 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Camiones from './pages/Camiones';
+import Productos from './pages/Productos';
+import Incidentes from './pages/Incidentes';
+import Usuarios from './pages/Usuarios';
+import Abastos from './pages/Abastos';
+import Reportes from './pages/Reportes';
+import RegistroCamiones from './pages/RegistroCamiones';
+import Movimientos from './pages/Movimientos';
 
-// dentro de <Routes>
-<Route path="/camiones" element={
-    <PrivateRoute>
-        <Camiones />
-    </PrivateRoute>
-} />
-
-
-const PrivateRoute = ({ children }) => {
+function PrivateRoute({ children }) {
     const { user } = useAuth();
     return user ? children : <Navigate to="/" />;
-};
+}
 
 function App() {
     return (
         <AuthProvider>
             <BrowserRouter>
                 <Routes>
+                    <Route path="/movimientos" element={
+                        <PrivateRoute>
+                            <Movimientos />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/registro-camiones" element={
+                        <PrivateRoute>
+                            <RegistroCamiones />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/reportes" element={
+                        <PrivateRoute>
+                            <Reportes />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/abastos" element={
+                        <PrivateRoute>
+                            <Abastos />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/usuarios" element={
+                        <PrivateRoute>
+                            <Usuarios />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/productos" element={
+                    <PrivateRoute>
+                     <Productos />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/incidentes" element={
+                        <PrivateRoute>
+                            <Incidentes />
+                        </PrivateRoute>
+                    } />
                     <Route path="/" element={<Login />} />
                     <Route path="/dashboard" element={
                         <PrivateRoute>
                             <Dashboard />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/camiones" element={
+                        <PrivateRoute>
+                            <Camiones />
                         </PrivateRoute>
                     } />
                 </Routes>
