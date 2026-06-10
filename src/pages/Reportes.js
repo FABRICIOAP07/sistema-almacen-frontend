@@ -7,23 +7,42 @@ const Reportes = () => {
     const navigate = useNavigate();
 
     const descargarExcel = async (tipo) => {
-        setCargando(true);
-        try {
-            const response = await api.get(`/excel/${tipo}`, {
-                responseType: 'blob'
-            });
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `${tipo}.xlsx`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        } catch (error) {
-            alert('Error al descargar el reporte');
+    setCargando(true);
+    try {
+        const token = localStorage.getItem('token');
+        console.log('Token:', token);
+        console.log('URL:', `http://localhost:8080/api/excel/${tipo}`);
+        
+        const response = await fetch(`http://localhost:8080/api/excel/${tipo}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors'
+        });
+        
+        console.log('Status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}`);
         }
-        setCargando(false);
-    };
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${tipo}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error completo:', error);
+        alert(`Error: ${error.message}`);
+    }
+    setCargando(false);
+};
 
     const reportes = [
         { titulo: 'Reporte de Camiones', icono: '🚛', tipo: 'camiones', descripcion: 'Lista completa de camiones registrados' },

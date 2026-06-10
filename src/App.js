@@ -10,10 +10,13 @@ import Abastos from './pages/Abastos';
 import Reportes from './pages/Reportes';
 import RegistroCamiones from './pages/RegistroCamiones';
 import Movimientos from './pages/Movimientos';
+import SeleccionRol from './pages/SeleccionRol'; // Importamos tu nueva vista
+import RegistroEmpleado from './pages/RegistroEmpleado';
 
+// Si no hay usuario, lo redirigimos a la pantalla de /login
 function PrivateRoute({ children }) {
     const { user } = useAuth();
-    return user ? children : <Navigate to="/" />;
+    return user ? children : <Navigate to="/login" />;
 }
 
 function App() {
@@ -21,6 +24,20 @@ function App() {
         <AuthProvider>
             <BrowserRouter>
                 <Routes>
+                    {/* 1. Portal de bienvenida y filtro visual previo */}
+                    <Route path="/" element={<SeleccionRol />} />
+
+                    {/* 2. El formulario de inicio de sesión */}
+                    <Route path="/login" element={<Login />} />
+                    {/* 3. El formulario de registro para nuevos empleados */}
+                    <Route path="/registro-empleado" element={<RegistroEmpleado />} />
+
+                    {/* Rutas Privadas Protegidas */}
+                    <Route path="/dashboard" element={
+                        <PrivateRoute>
+                            <Dashboard />
+                        </PrivateRoute>
+                    } />
                     <Route path="/movimientos" element={
                         <PrivateRoute>
                             <Movimientos />
@@ -47,19 +64,13 @@ function App() {
                         </PrivateRoute>
                     } />
                     <Route path="/productos" element={
-                    <PrivateRoute>
-                     <Productos />
+                        <PrivateRoute>
+                            <Productos />
                         </PrivateRoute>
                     } />
                     <Route path="/incidentes" element={
                         <PrivateRoute>
                             <Incidentes />
-                        </PrivateRoute>
-                    } />
-                    <Route path="/" element={<Login />} />
-                    <Route path="/dashboard" element={
-                        <PrivateRoute>
-                            <Dashboard />
                         </PrivateRoute>
                     } />
                     <Route path="/camiones" element={

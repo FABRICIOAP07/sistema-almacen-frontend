@@ -7,7 +7,7 @@ const Usuarios = () => {
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({
         nombre: '', apellido: '', correo: '',
-        contrasena: '', rol: 'almacen', estado: true
+        contrasena: '', rol: 'ROLE_ALMACEN', estado: true // Cambiado a ROLE_ALMACEN
     });
     const [editId, setEditId] = useState(null);
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ const Usuarios = () => {
         } else {
             await api.post('/usuarios', form);
         }
-        setForm({ nombre: '', apellido: '', correo: '', contrasena: '', rol: 'almacen', estado: true });
+        setForm({ nombre: '', apellido: '', correo: '', contrasena: '', rol: 'ROLE_ALMACEN', estado: true });
         setEditId(null);
         setShowForm(false);
         cargarUsuarios();
@@ -69,12 +69,14 @@ const Usuarios = () => {
                         <input type="password" placeholder="Contraseña" value={form.contrasena}
                             onChange={(e) => setForm({ ...form, contrasena: e.target.value })}
                             style={styles.input} required />
+                        
+                        {/* Selector corregido con las opciones del ENUM de Spring Boot */}
                         <select value={form.rol}
                             onChange={(e) => setForm({ ...form, rol: e.target.value })}
                             style={styles.input}>
-                            <option value="admin">Admin</option>
-                            <option value="transporte">Transporte</option>
-                            <option value="almacen">Almacén</option>
+                            <option value="ROLE_ADMIN">Admin</option>
+                            <option value="ROLE_TRANSPORTE">Transporte</option>
+                            <option value="ROLE_ALMACEN">Almacén</option>
                         </select>
                         <div style={styles.formButtons}>
                             <button type="submit" style={styles.saveBtn}>Guardar</button>
@@ -104,11 +106,12 @@ const Usuarios = () => {
                             <td>{u.apellido}</td>
                             <td>{u.correo}</td>
                             <td>
+                                {/* Validación de color de los badges actualizada */}
                                 <span style={{
                                     ...styles.badge,
-                                    backgroundColor: u.rol === 'admin' ? '#c8102e' : u.rol === 'transporte' ? '#007bff' : '#28a745'
+                                    backgroundColor: u.rol === 'ROLE_ADMIN' ? '#c8102e' : u.rol === 'ROLE_TRANSPORTE' ? '#007bff' : '#28a745'
                                 }}>
-                                    {u.rol}
+                                    {u.rol?.replace('ROLE_', '')}
                                 </span>
                             </td>
                             <td>{u.estado ? '✅' : '❌'}</td>
@@ -138,7 +141,7 @@ const styles = {
     table: { width: '100%', backgroundColor: 'white', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderCollapse: 'collapse' },
     thead: { backgroundColor: '#c8102e', color: 'white' },
     tr: { borderBottom: '1px solid #eee', textAlign: 'center' },
-    badge: { color: 'white', padding: '4px 10px', borderRadius: '12px', fontSize: '12px' },
+    badge: { color: 'white', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 'bold' },
     editBtn: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', marginRight: '5px' },
     deleteBtn: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px' },
 };

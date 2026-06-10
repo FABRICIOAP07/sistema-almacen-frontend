@@ -53,6 +53,18 @@ const Login = () => {
                     <button type="submit" style={styles.button}>
                         Iniciar Sesión
                     </button>
+                    {/*Enlace para registrarse */}
+                    <div style={{ textAlign: 'center', marginTop: '15px' }}>
+                        <p style={{ fontSize: '14px', color: '#666' }}>
+                            ¿Eres un empleado nuevo?{' '}
+                            <span 
+                                onClick={() => navigate('/registro-empleado')} 
+                                style={{ color: '#0056b3', cursor: 'pointer', fontWeight: 'bold', textDecoration: 'underline' }}
+                            >
+                                Regístrate aquí
+                            </span>
+                        </p>
+                    </div>
                 </form>
             </div>
         </div>
