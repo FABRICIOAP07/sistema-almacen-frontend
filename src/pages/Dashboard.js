@@ -53,12 +53,12 @@ const Dashboard = () => {
         <div style={styles.container}>
             <header style={styles.header}>
                 <div>
-                    <h1 style={styles.title}>🏭 Sistema de Almacén</h1>
+                    <h1 style={styles.title}>Sistema de Almacén</h1>
                     <p style={styles.subtitle}>Distribuidora Gloria S.A.C</p>
                 </div>
                 <div style={styles.userInfo}>
                     {/* Mostramos el Rol limpio sin el prefijo "ROLE_" en la interfaz */}
-                    <span>👤 {user?.nombre} ({user?.rol?.replace('ROLE_', '')})</span>
+                    <span>{user?.nombre} ({user?.rol?.replace('ROLE_', '')})</span>
                     <button onClick={handleLogout} style={styles.logoutBtn}>
                         Cerrar Sesión
                     </button>
@@ -66,7 +66,7 @@ const Dashboard = () => {
             </header>
 
             <main style={styles.main}>
-                <h2 style={styles.welcomeText}>Bienvenido, {user?.nombre} 👋</h2>
+                <h2 style={styles.welcomeText}>Bienvenido, {user?.nombre} </h2>
                 <div style={styles.grid}>
                     {modulosPermitidos.map((modulo) => (
                         <div

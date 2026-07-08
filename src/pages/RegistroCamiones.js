@@ -8,7 +8,7 @@ const RegistroCamiones = () => {
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({
         camion: { idCamion: '' },
-        usuario: { idUsuario: 1 },
+        usuario: { idUsuario: parseInt(localStorage.getItem('idUsuario') || 1) },
         tipoMovimiento: 'salida',
         fecha: '',
         hora: '',

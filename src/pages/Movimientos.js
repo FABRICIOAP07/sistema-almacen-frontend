@@ -9,7 +9,7 @@ const Movimientos = () => {
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({
         producto: { idProducto: '' },
-        usuario: { idUsuario: 1 },
+        usuario: { idUsuario: parseInt(localStorage.getItem('idUsuario') || 1) },
         camion: { idCamion: '' },
         tipoMovimiento: 'entrada',
         cantidad: 0,

@@ -8,7 +8,9 @@ const Abastos = () => {
     const [form, setForm] = useState({
         idEmpresa: '', placa: '', tipo: 'abarrote',
         modelo: 'contenedor', palletsCargados: 0,
-        fecha: '', usuario: { idUsuario: 1 }, estado: true
+        fecha: '', 
+        usuario: { idUsuario: parseInt(localStorage.getItem('idUsuario') || 1) }, 
+        estado: true
     });
     const [editId, setEditId] = useState(null);
     const navigate = useNavigate();

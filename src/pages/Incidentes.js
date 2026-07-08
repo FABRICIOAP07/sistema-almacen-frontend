@@ -6,8 +6,10 @@ const Incidentes = () => {
     const [incidentes, setIncidentes] = useState([]);
     const [camiones, setCamiones] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const idUsuario = parseInt(localStorage.getItem('idUsuario') || 1);
     const [form, setForm] = useState({
         camion: { idCamion: '' },
+        usuario: { idUsuario: idUsuario },
         tipo: 'accidente',
         descripcion: '',
         fecha: '',
@@ -39,14 +41,14 @@ const Incidentes = () => {
         } else {
             await api.post('/incidentes', form);
         }
-        setForm({ camion: { idCamion: '' }, tipo: 'accidente', descripcion: '', fecha: '', hora: '', estado: 'pendiente' });
+        setForm({ camion: { idCamion: '' }, usuario: { idUsuario: idUsuario }, tipo: 'accidente', descripcion: '', fecha: '', hora: '', estado: 'pendiente' });
         setEditId(null);
         setShowForm(false);
         cargarIncidentes();
     };
 
     const handleEdit = (i) => {
-        setForm({ camion: { idCamion: i.camion.idCamion }, tipo: i.tipo, descripcion: i.descripcion, fecha: i.fecha, hora: i.hora, estado: i.estado });
+        setForm({ camion: { idCamion: i.camion.idCamion }, usuario: { idUsuario: i.usuario.idUsuario }, tipo: i.tipo, descripcion: i.descripcion, fecha: i.fecha, hora: i.hora, estado: i.estado });
         setEditId(i.idIncidente);
         setShowForm(true);
     };
