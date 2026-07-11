@@ -2,17 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
-const Movimientos = () => {
-    const [movimientos, setMovimientos] = useState([]);
-    const [productos, setProductos] = useState([]);
+const RegistroCamiones = () => {
+    const [registros, setRegistros] = useState([]);
     const [camiones, setCamiones] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({
-        producto: { idProducto: '' },
-        usuario: { idUsuario: parseInt(localStorage.getItem('idUsuario') || 1) },
         camion: { idCamion: '' },
-        tipoMovimiento: 'entrada',
-        cantidad: 0,
+        usuario: { idUsuario: parseInt(localStorage.getItem('idUsuario') || 1) },
+        tipoMovimiento: 'salida',
         fecha: '',
         hora: '',
         observaciones: ''
@@ -21,19 +18,13 @@ const Movimientos = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        cargarMovimientos();
-        cargarProductos();
+        cargarRegistros();
         cargarCamiones();
     }, []);
 
-    const cargarMovimientos = async () => {
-        const res = await api.get('/movimientos');
-        setMovimientos(res.data);
-    };
-
-    const cargarProductos = async () => {
-        const res = await api.get('/productos');
-        setProductos(res.data);
+    const cargarRegistros = async () => {
+        const res = await api.get('/registro-camiones');
+        setRegistros(res.data);
     };
 
     const cargarCamiones = async () => {
@@ -44,26 +35,26 @@ const Movimientos = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (editId) {
-            await api.put(`/movimientos/${editId}`, form);
+            await api.put(`/registro-camiones/${editId}`, form);
         } else {
-            await api.post('/movimientos', form);
+            await api.post('/registro-camiones', form);
         }
-        setForm({ producto: { idProducto: '' }, usuario: { idUsuario: 1 }, camion: { idCamion: '' }, tipoMovimiento: 'entrada', cantidad: 0, fecha: '', hora: '', observaciones: '' });
+        setForm({ camion: { idCamion: '' }, usuario: { idUsuario: 1 }, tipoMovimiento: 'salida', fecha: '', hora: '', observaciones: '' });
         setEditId(null);
         setShowForm(false);
-        cargarMovimientos();
+        cargarRegistros();
     };
 
-    const handleEdit = (m) => {
-        setForm({ producto: { idProducto: m.producto.idProducto }, usuario: { idUsuario: m.usuario.idUsuario }, camion: { idCamion: m.camion?.idCamion }, tipoMovimiento: m.tipoMovimiento, cantidad: m.cantidad, fecha: m.fecha, hora: m.hora, observaciones: m.observaciones });
-        setEditId(m.idMovimiento);
+    const handleEdit = (r) => {
+        setForm({ camion: { idCamion: r.camion.idCamion }, usuario: { idUsuario: r.usuario.idUsuario }, tipoMovimiento: r.tipoMovimiento, fecha: r.fecha, hora: r.hora, observaciones: r.observaciones });
+        setEditId(r.idRegistro);
         setShowForm(true);
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Eliminar este movimiento?')) {
-            await api.delete(`/movimientos/${id}`);
-            cargarMovimientos();
+        if (window.confirm('¿Eliminar este registro?')) {
+            await api.delete(`/registro-camiones/${id}`);
+            cargarRegistros();
         }
     };
 
@@ -71,26 +62,18 @@ const Movimientos = () => {
         <div style={styles.container}>
             <header style={styles.header}>
                 <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>← Volver</button>
-                <h2 style={styles.title}>🔄 Movimientos de Productos</h2>
+                <h2 style={styles.title}>📋 Registro de Camiones</h2>
                 <button onClick={() => setShowForm(!showForm)} style={styles.addBtn}>+ Nuevo</button>
             </header>
 
             {showForm && (
                 <div style={styles.form}>
-                    <h3>{editId ? 'Editar Movimiento' : 'Nuevo Movimiento'}</h3>
+                    <h3>{editId ? 'Editar Registro' : 'Nuevo Registro'}</h3>
                     <form onSubmit={handleSubmit}>
-                        <select value={form.producto.idProducto}
-                            onChange={(e) => setForm({ ...form, producto: { idProducto: parseInt(e.target.value) } })}
-                            style={styles.input} required>
-                            <option value="">Seleccionar producto</option>
-                            {productos.map((p) => (
-                                <option key={p.idProducto} value={p.idProducto}>{p.codigo} - {p.nombre}</option>
-                            ))}
-                        </select>
                         <select value={form.camion.idCamion}
                             onChange={(e) => setForm({ ...form, camion: { idCamion: parseInt(e.target.value) } })}
-                            style={styles.input}>
-                            <option value="">Seleccionar camión (opcional)</option>
+                            style={styles.input} required>
+                            <option value="">Seleccionar camión</option>
                             {camiones.map((c) => (
                                 <option key={c.idCamion} value={c.idCamion}>{c.placa} - {c.conductor}</option>
                             ))}
@@ -98,12 +81,9 @@ const Movimientos = () => {
                         <select value={form.tipoMovimiento}
                             onChange={(e) => setForm({ ...form, tipoMovimiento: e.target.value })}
                             style={styles.input}>
-                            <option value="entrada">Entrada</option>
                             <option value="salida">Salida</option>
+                            <option value="entrada">Entrada</option>
                         </select>
-                        <input type="number" placeholder="Cantidad" value={form.cantidad}
-                            onChange={(e) => setForm({ ...form, cantidad: parseInt(e.target.value) })}
-                            style={styles.input} required />
                         <input type="date" value={form.fecha}
                             onChange={(e) => setForm({ ...form, fecha: e.target.value })}
                             style={styles.input} required />
@@ -125,33 +105,33 @@ const Movimientos = () => {
                 <thead>
                     <tr style={styles.thead}>
                         <th>ID</th>
-                        <th>Producto</th>
                         <th>Camión</th>
                         <th>Movimiento</th>
-                        <th>Cantidad</th>
                         <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Observaciones</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {movimientos.map((m) => (
-                        <tr key={m.idMovimiento} style={styles.tr}>
-                            <td>{m.idMovimiento}</td>
-                            <td>{m.producto?.nombre}</td>
-                            <td>{m.camion?.placa || '-'}</td>
+                    {registros.map((r) => (
+                        <tr key={r.idRegistro} style={styles.tr}>
+                            <td>{r.idRegistro}</td>
+                            <td>{r.camion?.placa}</td>
                             <td>
                                 <span style={{
                                     ...styles.badge,
-                                    backgroundColor: m.tipoMovimiento === 'entrada' ? '#28a745' : '#dc3545'
+                                    backgroundColor: r.tipoMovimiento === 'salida' ? '#dc3545' : '#28a745'
                                 }}>
-                                    {m.tipoMovimiento}
+                                    {r.tipoMovimiento}
                                 </span>
                             </td>
-                            <td>{m.cantidad}</td>
-                            <td>{m.fecha}</td>
+                            <td>{r.fecha}</td>
+                            <td>{r.hora}</td>
+                            <td>{r.observaciones}</td>
                             <td>
-                                <button onClick={() => handleEdit(m)} style={styles.editBtn}>✏️</button>
-                                <button onClick={() => handleDelete(m.idMovimiento)} style={styles.deleteBtn}>🗑️</button>
+                                <button onClick={() => handleEdit(r)} style={styles.editBtn}>✏️</button>
+                                <button onClick={() => handleDelete(r.idRegistro)} style={styles.deleteBtn}>🗑️</button>
                             </td>
                         </tr>
                     ))}
@@ -180,4 +160,4 @@ const styles = {
     deleteBtn: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px' },
 };
 
-export default Movimientos;
+export default RegistroCamiones;
